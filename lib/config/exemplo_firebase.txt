@@ -1,0 +1,21 @@
+//Importações do Firebase
+// ignore_for_file: unused_import
+
+import 'package:firebase_core/firebase_core.dart';
+
+//Definição das propriedades do Firebase
+class FirebaseConfig {
+  static const FirebaseOptions options = FirebaseOptions(
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+  );
+
+  //Iniciando o banco de dados
+  static Future<FirebaseApp> initialize() async {
+    return await Firebase.initializeApp(options: options);
+  }
+}
