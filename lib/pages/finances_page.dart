@@ -159,12 +159,165 @@ class _FinancesPageState extends State<FinancesPage> {
                               as Timestamp;
                       return bDate.compareTo(aDate);
                     }
-                    return aType == 'entrda' ? -1 : 1;
+                    return aType == 'entrada' ? -1 : 1;
                   });
-                } else if (filterType == 'saida') {
-                } else {}
+                } else if (sortBy == 'saida') {
+                  filteredDocs.sort((a, b) {
+                    final aType =
+                        (a.data() as Map<String, dynamic>)['type'] ?? 'saida';
+                    final bType =
+                        (b.data() as Map<String, dynamic>)['type'] ?? 'saida';
+                    if (aType == bType) {
+                      final aDate =
+                          (a.data() as Map<String, dynamic>)['date']
+                              as Timestamp;
+                      final bDate =
+                          (b.data() as Map<String, dynamic>)['date']
+                              as Timestamp;
+                      return bDate.compareTo(aDate);
+                    }
+                    return aType == 'saida' ? -1 : 1;
+                  });
+                } else {
+                  filteredDocs.sort((a, b) {
+                    final aDate =
+                        (a.data() as Map<String, dynamic>)['date'] as Timestamp;
+                    final bDate =
+                        (b.data() as Map<String, dynamic>)['date'] as Timestamp;
+                    return bDate.compareTo(aDate);
+                  });
+                }
 
-                return Center();
+                //Calcular o resumo financeiro
+                double totalEntrada = 0;
+                double totalSaida = 0;
+                for (var doc in filteredDocs) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  final value = (data['value'] ?? 0).toDouble();
+                  if ((data['type'] ?? 'saida') == 'entrada') {
+                    totalEntrada += value;
+                  } else {
+                    totalSaida += value;
+                  }
+                }
+                double saldo = totalEntrada - totalSaida;
+
+                //Exibir caso não existam lançamentos
+                if (filteredDocs.isEmpty) {
+                  return const Center(
+                    child: Text('Não existem dados a serem exibidos!'),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    //Resumo financeiro
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      color: Colors.blue.shade50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            'Entradas: R\$ ${totalEntrada.toStringAsFixed(2).toString().replaceAll('.', ',')}',
+                            style: TextStyle(
+                              color: Colors.green.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Saídas: R\$ ${totalSaida.toStringAsFixed(2).toString().replaceAll('.', ',')}',
+                            style: TextStyle(
+                              color: Colors.red.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Saldo: R\$ ${saldo.toStringAsFixed(2).toString().replaceAll('.', ',')}',
+                            style: TextStyle(
+                              color: saldo > 0
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      //Lista de registros
+                      child: ListView.builder(
+                        itemCount: filteredDocs.length,
+                        itemBuilder: (context, index) {
+                          final doc = filteredDocs[index];
+                          final data = doc.data() as Map<String, dynamic>;
+                          final type = data['type'] ?? 'saida';
+                          final description = data['description'] ?? '';
+                          final category = data['category'] ?? 'Outros';
+                          final value = (data['value'] ?? 0).toDouble();
+                          final date = (data['date'] as Timestamp).toDate();
+
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            color: _getCardColor(type),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                _getCardIcon(category, type),
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                              title: Text(
+                                description,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              subtitle: Text(
+                                // ignore: unnecessary_brace_in_string_interps
+                                'Categoria: $category\nData: ${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Valor: R\$ ${value.toStringAsFixed(2).toString().replaceAll('.', ',')}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.white),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AddEditPage(
+                                            docId: doc.id,
+                                            data: data,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           ),
