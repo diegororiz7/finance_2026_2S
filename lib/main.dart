@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:finance_2026_2s/pages/finances_page.dart';
 import 'package:finance_2026_2s/pages/add_edit_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 //Função principal
 void main() async {
@@ -23,6 +24,13 @@ class MyApp extends StatelessWidget {
       title: 'Controle de Finanças',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [Locale('pt', 'BR')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: const FinancesPage(),
     );
   }
