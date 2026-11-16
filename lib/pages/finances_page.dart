@@ -1,5 +1,5 @@
 //Importações de dependências
-// ignore_for_file: unused_import, unused_element, unused_local_variable
+// ignore_for_file: unused_import, unused_element, unused_local_variable, use_build_context_synchronously, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -296,16 +296,73 @@ class _FinancesPageState extends State<FinancesPage> {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.white),
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AddEditPage(
-                                            docId: doc.id,
-                                            data: data,
-                                          ),
-                                        ),
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              'Confirmação de exclusão',
+                                            ),
+                                            content: const Text(
+                                              'Deseja realmente excluir o registro?',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'Não',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  FirebaseFirestore.instance
+                                                      .collection('Finances')
+                                                      .doc(doc.id)
+                                                      .delete()
+                                                      .then(
+                                                        (_) => Navigator.of(
+                                                          context,
+                                                        ).pop(),
+                                                      );
+                                                },
+                                                child: Text(
+                                                  'Sim',
+                                                  style: TextStyle(
+                                                    color: Colors.green,
+                                                  ),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons.edit,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          AddEditPage(
+                                                            docId: doc.id,
+                                                            data: data,
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       );
                                     },
                                   ),
@@ -322,6 +379,16 @@ class _FinancesPageState extends State<FinancesPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AddEditPage()),
+          );
+        },
+        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }
