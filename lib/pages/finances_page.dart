@@ -296,6 +296,20 @@ class _FinancesPageState extends State<FinancesPage> {
                                     ),
                                   ),
                                   IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.white),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AddEditPage(
+                                            docId: doc.id,
+                                            data: data,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
                                     icon: const Icon(
                                       Icons.delete,
                                       color: Colors.white,
@@ -312,17 +326,6 @@ class _FinancesPageState extends State<FinancesPage> {
                                               'Deseja realmente excluir o registro?',
                                             ),
                                             actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text(
-                                                  'Não',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              ),
                                               TextButton(
                                                 onPressed: () {
                                                   FirebaseFirestore.instance
@@ -342,23 +345,16 @@ class _FinancesPageState extends State<FinancesPage> {
                                                   ),
                                                 ),
                                               ),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.edit,
-                                                  color: Colors.white,
-                                                ),
+                                              TextButton(
                                                 onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          AddEditPage(
-                                                            docId: doc.id,
-                                                            data: data,
-                                                          ),
-                                                    ),
-                                                  );
+                                                  Navigator.of(context).pop();
                                                 },
+                                                child: Text(
+                                                  'Não',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           );
