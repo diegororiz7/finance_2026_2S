@@ -75,14 +75,23 @@ class _DashboardPageState extends State<DashboardPage> {
                   saldo > 0 ? Colors.green : Colors.red,
                   Icons.account_balance_wallet,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.list),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => FinancesPage()),
-                    );
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FinancesPage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.receipt_long),
+                    label: const Text('Ver movimentações'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -108,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Text(titulo, style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 6),
                   Text(
-                    'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')},',
+                    'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
