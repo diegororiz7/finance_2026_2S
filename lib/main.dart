@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:finance_2026_2s/pages/finances_page.dart';
 import 'package:finance_2026_2s/pages/add_edit_page.dart';
+import 'package:finance_2026_2s/pages/dashboard_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 //Função principal
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const FinancesPage(),
+      home: const DashboardPage(),
     );
   }
 }

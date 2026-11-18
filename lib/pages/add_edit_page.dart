@@ -146,6 +146,46 @@ class _AddEditPageState extends State<AddEditPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    //Associandos os campos do formulário ao banco
+                    final data = {
+                      'description': _descriptionController.text,
+                      'value': (double.tryParse(_valueController.text) ?? 0),
+                      'category': _category,
+                      'type': _type,
+                      'date': Timestamp.fromDate(_selectDate),
+                    };
+
+                    if (widget.data != null) {
+                      //Editando registro
+                      FirebaseFirestore.instance
+                          .collection('Finances')
+                          .doc(widget.docId)
+                          .update(data);
+                    } else {
+                      //Adicionando registro
+                      FirebaseFirestore.instance
+                          .collection('Finances')
+                          .add(data);
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => FinancesPage()),
+                    );
+                  }
+                },
+                child: Text(
+                  widget.docId != null ? 'Salvar edição' : 'Adicionar registro',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
